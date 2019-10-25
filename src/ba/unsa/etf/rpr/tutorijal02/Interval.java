@@ -1,8 +1,11 @@
 package ba.unsa.etf.rpr.tutorijal02;
 
+import javax.swing.*;
+import java.util.Objects;
+
 public class Interval {
-    double pocetna, krajnja;
-    boolean pocPripada, kraPripada;
+    private double pocetna, krajnja;
+    private boolean pripada1, pripada2;
 
     Interval(double pocetna, double krajnja, boolean pripada1, boolean pripada2) {
         if(pocetna > krajnja)
@@ -10,19 +13,19 @@ public class Interval {
 
         this.pocetna = pocetna;
         this.krajnja = krajnja;
-        pocPripada = pripada1;
-        kraPripada = pripada2;
+        this.pripada1 = pripada1;
+        this.pripada2 = pripada2;
     }
 
     Interval() {
         pocetna = 0;
         krajnja = 0;
-        pocPripada = false;
-        kraPripada = false;
+        pripada1 = false;
+        pripada2 = false;
     }
 
     boolean isNull() {
-        return (pocetna == 0 && pocetna == krajnja && !pocPripada && pocPripada == kraPripada);
+        return (pocetna == 0 && pocetna == krajnja && !pripada1 && pripada1 == pripada2);
     }
 
     boolean isIn(double tacka) {
@@ -30,19 +33,59 @@ public class Interval {
     }
 
     Interval intersect(Interval interval) {
+        return intersect(this, interval);
+    }
+
+    static Interval intersect(Interval prvi, Interval drugi) {
         boolean jedan = true, dva = true;
         double poc, kra;
 
-        if(this.pocetna > interval.pocetna) {
-            poc = pocetna;
-            jedan = interval.pocPripada;
+        if(prvi.pocetna > drugi.pocetna) {
+            poc = prvi.pocetna;
+            jedan = prvi.pripada1;
         }
         else {
-            poc = interval.pocetna;
+            poc = drugi.pocetna;
+            jedan = drugi.pripada1;
         }
+
+        if(prvi.krajnja > drugi.krajnja) {
+            kra = drugi.krajnja;
+            dva = drugi.pripada2;
+        }
+        else {
+            kra = prvi.krajnja;
+            jedan = prvi.pripada2;
+        }
+
+        return new Interval(poc, kra, jedan, dva);
     }
 
-    Interval intersect(Interval prvi, Interval drugi) {
-        if(prvi.pocetna > )
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Interval interval = (Interval) o;
+        return Double.compare(interval.pocetna, pocetna) == 0 &&
+                Double.compare(interval.krajnja, krajnja) == 0 &&
+                pripada1 == interval.pripada1 &&
+                pripada2 == interval.pripada2;
+    }
+
+    @Override
+    public String toString() {
+        String ispis1, ispis2;
+        if(this.isNull())
+            return "()";
+        if(pripada1)
+            ispis1 = "[";
+        else
+            ispis1 = "(";
+        if(pripada2)
+            ispis2 = "]";
+        else
+            ispis2 = ")";
+
+        return ispis1 + pocetna + "," + krajnja + ispis2;
     }
 }
