@@ -29,7 +29,12 @@ public class Interval {
     }
 
     boolean isIn(double tacka) {
-        return tacka >= pocetna && tacka <= krajnja;
+        if(tacka >= pocetna && tacka < krajnja && pripada1)
+            return true;
+        else if(tacka > pocetna && tacka <= krajnja && pripada2)
+            return true;
+
+        return false;
     }
 
     Interval intersect(Interval interval) {
@@ -37,14 +42,14 @@ public class Interval {
     }
 
     static Interval intersect(Interval prvi, Interval drugi) {
-        boolean jedan = true, dva = true;
-        double poc, kra;
+        boolean jedan = prvi.pripada1, dva = prvi.pripada2;
+        double poc = 0, kra = 0;
 
         if(prvi.pocetna > drugi.pocetna) {
             poc = prvi.pocetna;
             jedan = prvi.pripada1;
         }
-        else {
+        else if(prvi.pocetna < drugi.pocetna) {
             poc = drugi.pocetna;
             jedan = drugi.pripada1;
         }
@@ -53,9 +58,9 @@ public class Interval {
             kra = drugi.krajnja;
             dva = drugi.pripada2;
         }
-        else {
+        else if(prvi.krajnja < drugi.krajnja){
             kra = prvi.krajnja;
-            jedan = prvi.pripada2;
+            dva = prvi.pripada2;
         }
 
         return new Interval(poc, kra, jedan, dva);
